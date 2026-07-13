@@ -1,67 +1,68 @@
+<?php
+/* -----------------------------------------------------------
+   MindSpace — Homepage (index.php)
+   Features: Daily wellness tip (PHP array + date), breathing
+   animation (@keyframes), mood quick-check form, featured
+   resources via foreach.
+   ----------------------------------------------------------- */
+session_start();
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="MindSpace — A digital wellness and mental health platform for college students. Access resources, journal your mood, and find support.">
-    <meta name="author" content="Howard Fletcher, Sakib Jamal">
-    <title>Home — MindSpace</title>
+$currentPage = 'home';
+$pageTitle   = 'Home';
 
-    <!-- Google Fonts: DM Serif Display (display) + Inter (body) -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+/* ---- Daily Wellness Tips — one per weekday via date('N') ---- */
+$tips = [
+    "Start your day with five minutes of mindful breathing. Your mind will thank you.",
+    "Take a screen break every 90 minutes — step outside, stretch, or just look at something far away.",
+    "Write down three things you're grateful for today. Gratitude rewires your brain for positivity.",
+    "Move your body for at least 20 minutes. Exercise is one of the most effective natural antidepressants.",
+    "Reach out to someone you trust today. Connection is one of the strongest mental health protectors.",
+    "Set one boundary today — it's okay to say no to protect your energy and focus.",
+    "End your day by reflecting on one thing that went well. Progress matters more than perfection."
+];
+$todayTip = $tips[date('N') - 1]; // date('N'): Mon=1 … Sun=7
 
-    <!-- Stylesheet -->
-    <link rel="stylesheet" href="css/style.css">
-</head>
-<body>
-    <!-- Skip-to-content link -->
-    <a href="#main-content" class="skip-link">Skip to main content</a>
+/* ---- Featured Resources (subset) ---- */
+$featuredResources = [
+    [
+        'title'       => 'Managing Exam Anxiety',
+        'description' => 'Evidence-based techniques to calm pre-test nerves and perform at your best when it matters most.',
+        'category'    => 'anxiety',
+        'type'        => 'Guide',
+        'url'         => 'https://www.apa.org/topics/anxiety'
+    ],
+    [
+        'title'       => 'Sleep Hygiene for Night Owls',
+        'description' => 'A practical guide to better sleep even when your schedule is unpredictable.',
+        'category'    => 'sleep',
+        'type'        => 'Guide',
+        'url'         => 'https://www.sleepfoundation.org/sleep-hygiene'
+    ],
+    [
+        'title'       => '988 Suicide &amp; Crisis Lifeline',
+        'description' => 'Free, 24/7 confidential support. Call or text 988 anytime you need to talk.',
+        'category'    => 'crisis',
+        'type'        => 'Hotline',
+        'url'         => 'https://988lifeline.org'
+    ]
+];
 
-    <header class="site-header" role="banner">
-        <div class="container nav-container">
-            <!-- Brand -->
-            <a href="index.php" class="logo" aria-label="MindSpace — return to homepage">
-                <span class="logo-icon" aria-hidden="true">🍃</span>
-                <span class="logo-text">MindSpace</span>
-            </a>
-
-            <!-- CSS-only hamburger toggle -->
-            <input type="checkbox" id="nav-toggle" class="nav-toggle-checkbox" aria-hidden="true">
-            <label for="nav-toggle" class="nav-toggle-label" aria-label="Toggle navigation menu">
-                <span class="hamburger-bar"></span>
-                <span class="hamburger-bar"></span>
-                <span class="hamburger-bar"></span>
-            </label>
-
-            <!-- Primary navigation -->
-            <nav class="main-nav" role="navigation" aria-label="Main navigation">
-                <ul class="nav-list">
-                    <li><a href="index.php" class="nav-link active" aria-current="page">Home</a></li>
-                    <li><a href="planner.php" class="nav-link " >Planner</a></li>
-                    <li><a href="resources.php" class="nav-link " >Resources</a></li>
-                    <li><a href="journal.php" class="nav-link " >Journal</a></li>
-                    <li><a href="about.php" class="nav-link " >About</a></li>
-                </ul>
-            </nav>
-        </div>
-    </header>
+include('includes/header.php');
+?>
 
     <main id="main-content">
 
-        <!-- DAILY TIP -->
+        <!-- ===================== DAILY TIP ===================== -->
         <section class="section" aria-label="Daily wellness tip">
             <div class="container">
                 <div class="tip-banner">
                     <p class="tip-label">Today's Wellness Tip</p>
-                    <p class="tip-text">Start your day with five minutes of mindful breathing. Your mind will thank you.</p>
+                    <p class="tip-text"><?= htmlspecialchars($todayTip) ?></p>
                 </div>
             </div>
         </section>
 
-        <!-- HERO: BREATHING -->
+        <!-- ================= HERO: BREATHING =================== -->
         <section class="hero" aria-label="Welcome">
             <div class="container">
                 <div class="hero-content">
@@ -69,7 +70,12 @@
                         <h1>Your mind deserves a moment.</h1>
                         <p>MindSpace is a student wellness hub built by GSU students who understand the pressure. Check in with yourself, explore curated resources, and take small steps toward feeling better.</p>
                         <p style="margin-top: var(--space-sm);"><a href="planner.php" class="btn-primary">Open Your Planner →</a></p>
-                                            </div>
+                        <?php if (isset($_SESSION['mood'])): ?>
+                            <div class="welcome-back">
+                                <strong>Welcome back.</strong> Your last mood check-in: <?= htmlspecialchars($_SESSION['mood']['mood']) ?>. <a href="journal.php">Update your journal →</a>
+                            </div>
+                        <?php endif; ?>
+                    </div>
 
                     <!-- CSS-only breathing animation -->
                     <div class="breathing-wrapper">
@@ -135,31 +141,17 @@
                 <h2 class="text-center">Featured Resources</h2>
                 <p class="text-center" style="color:#666; margin-bottom:var(--space-lg);">Curated tools and guides for common student wellness challenges.</p>
                 <div class="resource-grid">
-                                        <article class="resource-card cat-anxiety">
-                        <span class="resource-type">Guide</span>
-                        <h3>Managing Exam Anxiety</h3>
-                        <p>Evidence-based techniques to calm pre-test nerves and perform at your best when it matters most.</p>
-                        <a href="https://www.apa.org/topics/anxiety" class="resource-link" target="_blank" rel="noopener noreferrer">
+                    <?php foreach ($featuredResources as $resource): ?>
+                    <article class="resource-card cat-<?= htmlspecialchars($resource['category']) ?>">
+                        <span class="resource-type"><?= htmlspecialchars($resource['type']) ?></span>
+                        <h3><?= $resource['title'] ?></h3>
+                        <p><?= $resource['description'] ?></p>
+                        <a href="<?= htmlspecialchars($resource['url']) ?>" class="resource-link" target="_blank" rel="noopener noreferrer">
                             Learn more →
                         </a>
                     </article>
-                                        <article class="resource-card cat-sleep">
-                        <span class="resource-type">Guide</span>
-                        <h3>Sleep Hygiene for Night Owls</h3>
-                        <p>A practical guide to better sleep even when your schedule is unpredictable.</p>
-                        <a href="https://www.sleepfoundation.org/sleep-hygiene" class="resource-link" target="_blank" rel="noopener noreferrer">
-                            Learn more →
-                        </a>
-                    </article>
-                                        <article class="resource-card cat-crisis">
-                        <span class="resource-type">Hotline</span>
-                        <h3>988 Suicide &amp; Crisis Lifeline</h3>
-                        <p>Free, 24/7 confidential support. Call or text 988 anytime you need to talk.</p>
-                        <a href="https://988lifeline.org" class="resource-link" target="_blank" rel="noopener noreferrer">
-                            Learn more →
-                        </a>
-                    </article>
-                                    </div>
+                    <?php endforeach; ?>
+                </div>
                 <p class="text-center" style="margin-top:var(--space-md);">
                     <a href="resources.php" class="btn-secondary">View All Resources →</a>
                 </p>
@@ -168,24 +160,4 @@
 
     </main>
 
-
-    <footer class="site-footer" role="contentinfo">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-brand">
-                    <span class="logo-icon" aria-hidden="true">🍃</span>
-                    <span class="footer-name">MindSpace</span>
-                </div>
-                <p class="footer-tagline">Your mental health matters. Take it one day at a time.</p>
-                <div class="footer-meta">
-                    <p>CSC 4370/6370 Web Programming &mdash; Summer 2026</p>
-                    <p>Howard Fletcher &amp; Sakib Jamal &mdash; Georgia State University</p>
-                </div>
-                <p class="footer-crisis">
-                    If you are in crisis, call or text <a href="tel:988" aria-label="Call 988 Suicide and Crisis Lifeline">988</a> &mdash; available 24/7.
-                </p>
-            </div>
-        </div>
-    </footer>
-</body>
-</html>
+<?php include('includes/footer.php'); ?>
