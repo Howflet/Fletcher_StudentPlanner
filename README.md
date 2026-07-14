@@ -124,16 +124,3 @@ All code was reviewed, customized, and tested by the team. The design direction,
 1. Upload all files to a PHP-enabled server (e.g., GSU's `codd.cs.gsu.edu`)
 2. Navigate to `index.php` in a browser
 3. No build step, database, or JavaScript required
-
----
-
-## QA Checklist
-
-- [ ] Desktop (1024px+): All layouts render correctly
-- [ ] Tablet (768px): Grid collapses to 2 columns, hamburger appears
-- [ ] Mobile (480px): Single column, horizontal filter scroll, stacked nav
-- [ ] Keyboard navigation: Tab through all interactive elements
-- [ ] Form validation: Submit empty journal, check error messages
-- [ ] Session: Submit journal → confirmation → homepage shows welcome-back
-- [ ] CSS filter: Toggle each category on resources page
-- [ ] No `<script>` tags or `.js` files present

@@ -1,3 +1,9 @@
+# MindSpace — Digital Wellness & Mental Health Platform
+
+**CSC 4370/6370 Web Programming — Summer 2026**  
+**Georgia State University**  
+**Team:** Howard Fletcher (Project Lead) & Sakib Jamal
+
 ## QA Checklist
 
 - [ ] Desktop (1024px+):
